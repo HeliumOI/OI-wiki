@@ -26,7 +26,7 @@ Object b, B[array_length];
 Object *c;
 ```
 
-与使用 `struct` 大同小异。该例定义了一个名为 `Object` 的类。该类拥有四个成员元素，分别为 `weight,value`；并在 `}` 后定义了一个数组 `B`。
+与使用 `struct` 大同小异。该例定义了一个名为 `Object` 的类。该类拥有两个成员元素，分别为 `weight,value`；并在 `}` 后使用该类型定义了一个数组 `e`。
 
 定义类的指针形同 [`struct`](./struct.md)。
 
@@ -81,14 +81,18 @@ class Object {
  public:
   int weight;
   int value;
+
   void print() {
     cout << weight << endl;
     return;
   }
+
   void change_w(int);
 };
 
 void Object::change_w(int _weight) { weight = _weight; }
+
+Object var;
 ```
 
 该类有一个打印 `Object` 成员元素的函数，以及更改成员元素 `weight` 的函数。
@@ -116,9 +120,13 @@ void Object::change_w(int _weight) { weight = _weight; }
 class Vector {
  public:
   int x, y;
+
   Vector() : x(0), y(0) {}
+
   Vector(int _x, int _y) : x(_x), y(_y) {}
+
   int operator*(const Vector& other) { return x * other.y + y * other.x; }
+
   Vector operator+(const Vector&);
   Vector operator-(const Vector&);
 };
@@ -130,7 +138,8 @@ Vector Vector::operator+(const Vector& other) {
 Vector Vector::operator-(const Vector& other) {
   return Vector(x - other.x, y - other.y);
 }
-//关于4,5行表示为x,y赋值，具体实现参见后文。
+
+// 关于4,5行表示为x,y赋值，具体实现参见后文。
 ```
 
 该例定义了一个向量类，并重载了 `* + -` 运算符，并分别代表向量内积，向量加，向量减。
@@ -169,6 +178,7 @@ class Object {
  public:
   int weight;
   int value;
+
   Object() {
     weight = 0;
     value = 0;
@@ -209,14 +219,17 @@ class Object {
  public:
   int weight;
   int value;
+
   Object() {
     weight = 0;
     value = 0;
   }
+
   Object(int _weight = 0, int _value = 0) {
     weight = _weight;
     value = _value;
   }
+
   // the same as
   // Object(int _weight,int _value):weight(_weight),value(_value) {}
 };
@@ -240,8 +253,10 @@ Object C{1, 2};  // ok,(C++11)
     class Node {
      public:
       int var;
+    
       Node(int _var) : var(_var) {}
     };
+    
     Node a = 1;
     ```
     
@@ -255,6 +270,7 @@ Object C{1, 2};  // ok,(C++11)
     class Node {
      public:
       int var;
+    
       explicit Node(int _var) : var(_var) {}
     };
     ```
@@ -281,10 +297,12 @@ class Object {
   int weight;
   int value;
   int* ned;
+
   Object() {
     weight = 0;
     value = 0;
   }
+
   ~Object() { delete ned; }
 };
 ```

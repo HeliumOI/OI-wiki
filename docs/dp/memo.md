@@ -9,9 +9,11 @@
 注：为了节省篇幅，本文中所有代码省略头文件。
 
 ```cpp
+// C++ Version
 int n, t;
 int tcost[103], mget[103];
 int ans = 0;
+
 void dfs(int pos, int tleft, int tans) {
   if (tleft < 0) return;
   if (pos == n + 1) {
@@ -21,6 +23,7 @@ void dfs(int pos, int tleft, int tans) {
   dfs(pos + 1, tleft, tans);
   dfs(pos + 1, tleft - tcost[pos], tans + mget[pos]);
 }
+
 int main() {
   cin >> t >> n;
   for (int i = 1; i <= n; i++) cin >> tcost[i] >> mget[i];
@@ -28,6 +31,29 @@ int main() {
   cout << ans << endl;
   return 0;
 }
+```
+
+```python
+# Python Version
+tcost = [0] * 103
+mget = [0] * 103
+ans = 0
+
+def dfs(pos, tleft, tans):
+    global ans
+    if tleft < 0:
+        return
+    if pos == n + 1:
+        ans = max(ans, tans)
+        return
+    dfs(pos + 1, tleft, tans)
+    dfs(pos + 1, tleft - tcost[pos], tans + mget[pos])
+
+t, n = map(lambda x:int(x), input().split())
+for i in range(1, n + 1):
+    tcost[i], mget[i] = map(lambda x:int(x), input().split())
+dfs(1, t, 0)
+print(ans)
 ```
 
 这就是个十分朴素的大暴搜是吧……
@@ -49,8 +75,10 @@ emmmmmm……$30$ 分。
 不理解就看看代码吧：
 
 ```cpp
+// C++ Version
 int n, time;
 int tcost[103], mget[103];
+
 int dfs(int pos, int tleft) {
   if (pos == n + 1) return 0;
   int dfs1, dfs2 = -INF;
@@ -58,12 +86,33 @@ int dfs(int pos, int tleft) {
   if (tleft >= tcost[pos]) dfs2 = dfs(pos + 1, tleft - tcost[pos]) + mget[pos];
   return max(dfs1, dfs2);
 }
+
 int main() {
   cin >> time >> n;
   for (int i = 1; i <= n; i++) cin >> tcost[i] >> mget[i];
   cout << dfs(1, time) << endl;
   return 0;
 }
+```
+
+```python
+# Python Version
+tcost = [0] * 103
+mget = [0] * 103
+
+def dfs(pos, tleft):
+    if pos == n + 1:
+        return 0
+    dfs1 = dfs2 = -INF
+    dfs1 = dfs(pos + 1, tleft)
+    if tleft >= tcost[pos]:
+        dfs2 = dfs(pos + 1, tleft - tcost[pos]) + mget[pos]
+    return max(dfs1, dfs2)
+
+time, n = map(lambda x:int(x), input().split())
+for i in range(1, n + 1):
+    tcost[i], mget[i] = map(lambda x:int(x), input().split())
+print(dfs(1, time))
 ```
 
 emmmmmm……还是 30 分。
@@ -87,9 +136,11 @@ emmmmmm……还是 30 分。
 **直接返回 mem 中的值！**
 
 ```cpp
+// C++ Version
 int n, t;
 int tcost[103], mget[103];
 int mem[103][1003];
+
 int dfs(int pos, int tleft) {
   if (mem[pos][tleft] != -1) return mem[pos][tleft];
   if (pos == n + 1) return mem[pos][tleft] = 0;
@@ -98,6 +149,7 @@ int dfs(int pos, int tleft) {
   if (tleft >= tcost[pos]) dfs2 = dfs(pos + 1, tleft - tcost[pos]) + mget[pos];
   return mem[pos][tleft] = max(dfs1, dfs2);
 }
+
 int main() {
   memset(mem, -1, sizeof(mem));
   cin >> t >> n;
@@ -105,6 +157,31 @@ int main() {
   cout << dfs(1, t) << endl;
   return 0;
 }
+```
+
+```python
+# Python Version
+tcost = [0] * 103
+mget = [0] * 103
+mem = [[-1 for i in range(1003)] for j in range(103)]
+def dfs(pos, tleft):
+    if mem[pos][tleft] != -1:
+        return mem[pos][tleft]
+    if pos == n + 1:
+        mem[pos][tleft] = 0
+        return mem[pos][tleft]
+    dfs1 = dfs2 = -INF
+    dfs1 = dfs(pos + 1, tleft)
+    if tleft >= tcost[pos]:
+        dfs2 = dfs(pos + 1, tleft - tcost[pos]) + mget[pos]
+    mem[pos][tleft] = max(dfs1, dfs2)
+    return mem[pos][tleft]
+
+
+t, n = map(lambda x:int(x), input().split())
+for i in range(1, n + 1):
+    tcost[i], mget[i] = map(lambda x:int(x), input().split())
+print(dfs(1, t))
 ```
 
 此时 `mem` 的意义与 dfs 相同：
@@ -141,7 +218,7 @@ int main() {
 
 由上面的代码中可以看出：
 
-$\mathit{mem}_{\mathit{pos},\mathit{tleft} = \max\{mem_{\mathit{pos}+1},\mathit{tleft}-\mathit{tcost}(\mathit{pos})}+\mathit{mget}(\mathit{pos}),mem_{\mathit{pos}+1,\mathit{tleft}}\}$
+$\mathit{mem}_{\mathit{pos},\mathit{tleft}} = \max\{mem_{\mathit{pos}+1,\mathit{tleft}-\mathit{tcost}(\mathit{pos})}+\mathit{mget}(\mathit{pos}),mem_{\mathit{pos}+1,\mathit{tleft}}\}$
 
 这不就是 dp 的状态转移？
 
@@ -158,16 +235,28 @@ $\mathit{dp}(i,j,k) = \mathit{dp}(i+1,j+1,k-a_j) + \mathit{dp}(i+1,j,k)$
 转为
 
 ```cpp
+// C++ Version
 int dfs(int i, int j, int k) {
   // 判断边界条件
   if (mem[i][j][k] != -1) return mem[i][j][k];
   return mem[i][j][k] = dfs(i + 1, j + 1, k - a[j]) + dfs(i + 1, j, k);
 }
+
 int main() {
   memset(mem, -1, sizeof(mem));
   // 读入部分略去
   cout << dfs(1, 0, 0) << endl;
 }
+```
+
+```python
+# Python Version
+def dfs(i, j, k):
+    # 判断边界条件
+    if mem[i][j][k] != -1:
+        return mem[i][j][k]
+    mem[i][j][k] = dfs(i + 1, j + 1, k - a[j]) + dfs(i + 1, j, k)
+    return mem[i][j][k]
 ```
 
 * * *
@@ -187,6 +276,7 @@ $dp_{i} = max\{dp_{j}+1\}\quad (1 \leq j < i \land a_{j}<a_{i})$（最长上升�
 转为
 
 ```cpp
+// C++ Version
 int dfs(int i) {
   if (mem[i] != -1) return mem[i];
   int ret = 1;
@@ -194,11 +284,25 @@ int dfs(int i) {
     if (a[j] < a[i]) ret = max(ret, dfs(j) + 1);
   return mem[i] = ret;
 }
+
 int main() {
   memset(mem, -1, sizeof(mem));
   // 读入部分略去
   cout << dfs(n) << endl;
 }
+```
+
+```python
+# Python Version
+def dfs(i):
+    if mem[i] != -1:
+        return mem[i]
+    ret = 1
+    for j in range(1, i):
+        if a[j] < a[i]:
+            ret = max(ret, dfs(j) + 1)
+    mem[i] = ret
+    return mem[i]
 ```
 
 ### 方法二
@@ -253,12 +357,14 @@ dp 状态很显然：
 
 ```cpp
 int g[MAXN];
+
 int f(状态参数) {
   if (g[规模] != 无效数值) return g[规模];
   if (终止条件) return 最小子问题解;
   g[规模] = f(缩小规模);
   return g[规模];
 }
+
 int main() {
   // ...
   memset(g, 无效数值, sizeof(g));

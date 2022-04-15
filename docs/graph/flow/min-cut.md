@@ -12,8 +12,6 @@
 
 最小割就是求得一个割 $(S,T)$ 使得割的容量 $c(S,T)$ 最小。
 
-* * *
-
 ## 证明
 
 ### 最大流最小割定理
@@ -34,8 +32,6 @@ $$
 
 结合前面的不等式，我们可以知道此时 $f$ 已经达到最大。
 
-* * *
-
 ## 代码
 
 ### 最小割
@@ -55,7 +51,9 @@ $$
     void add(int u, int v, int w) {
       ter[++tot] = v, nxt[tot] = lnk[u], lnk[u] = tot, val[tot] = w;
     }
+    
     void addedge(int u, int v, int w) { add(u, v, w), add(v, u, 0); }
+    
     int bfs(int s, int t) {
       memset(dep, 0, sizeof(dep));
       memcpy(cur, lnk, sizeof(lnk));
@@ -71,6 +69,7 @@ $$
       }
       return dep[t];
     }
+    
     int dfs(int u, int t, int flow) {
       if (u == t) return flow;
       int ans = 0;
@@ -84,6 +83,7 @@ $$
       if (ans < flow) dep[u] = -1;
       return ans;
     }
+    
     int dinic(int s, int t) {
       int ans = 0;
       while (bfs(s, t)) {
@@ -92,6 +92,7 @@ $$
       }
       return ans;
     }
+    
     int main() {
       scanf("%d%d%d%d", &n, &m, &s, &t);
       while (m--) {
@@ -106,7 +107,7 @@ $$
 
 ### 方案
 
-我们可以通过从源点 $s$ 开始 $\text{DFS}$，每次走残量大于 $0$ 的边，找到所有 $S$ 点集内的点。
+我们可以通过从源点 $s$ 开始 DFS，每次走残量大于 $0$ 的边，找到所有 $S$ 点集内的点。
 
 ```cpp
 void dfs(int u) {
@@ -120,13 +121,13 @@ void dfs(int u) {
 
 ### 割边数量
 
-只需要将每条边的容量变为 $1$，然后重新跑 $\text{Dinic}$ 即可。
-
-* * *
+只需要将每条边的容量变为 $1$，然后重新跑 Dinic 即可。
+???+ warning
+    这个割边数量并没有保证是在最小割的前提下，所以最下方的例题不能做如此简单的处理。具体解法可以参见题解，不要被这句话误导了。
 
 ## 问题模型
 
-有 $n$ 个物品和两个集合 $A,B$，如果将一个物品放入 $A$ 集合会花费 $a_i$，放入 $B$ 集合会花费 $b_i$；还有若干个形如 $u_i,v_i,w_i$ 限制条件，表示如果 $u_i$ 和 $v_i$ 同时不在一个集合会花费 $w_i$。每个物品必须且只能属于一个集合，求最小的代价。
+有 $n$ 个物品和两个集合 $A,B$，如果一个物品没有放入 $A$ 集合会花费 $a_i$，没有放入 $B$ 集合会花费 $b_i$；还有若干个形如 $u_i,v_i,w_i$ 限制条件，表示如果 $u_i$ 和 $v_i$ 同时不在一个集合会花费 $w_i$。每个物品必须且只能属于一个集合，求最小的代价。
 
 这是一个经典的 **二者选其一** 的最小割题目。我们对于每个集合设置源点 $s$ 和汇点 $t$，第 $i$ 个点由 $s$ 连一条容量为 $a_i$ 的边、向 $t$ 连一条容量为 $b_i$ 的边。对于限制条件 $u,v,w$，我们在 $u,v$ 之间连容量为 $w$ 的双向边。
 
@@ -134,13 +135,9 @@ void dfs(int u) {
 
 最小割就是最小花费。
 
-* * *
-
 ## 习题
 
 - [「USACO 4.4」Pollutant Control](https://www.luogu.com.cn/problem/P1344)
 - [「USACO 5.4」Telecowmunication](https://www.luogu.com.cn/problem/P1345)
 - [「Luogu 1361」小 M 的作物](https://www.luogu.com.cn/problem/P1361)
 - [「SHOI 2007」善意的投票](https://www.luogu.com.cn/problem/P2057)
-
-* * *
